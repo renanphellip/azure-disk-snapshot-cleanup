@@ -2,8 +2,8 @@ import typer
 from typing import Optional, List
 from snapcleanup.config import settings
 from snapcleanup.core import DiskSnapshotCleanup
-from rich.table import Table
 from rich.console import Console
+from rich.table import Table
 
 
 cli = typer.Typer(help="Azure Disk Snapshot Cleanup", no_args_is_help=True)
@@ -26,13 +26,7 @@ def list_subscriptions(
     )
 ):
     """List all subscriptions that user has access."""
-    subscriptions = snap_cleanup.list_subscriptions()
-    table = Table(title="Subscription List")
-    headers = ["ID", "Name"]
-    for header in headers:
-        table.add_column(header, style="magenta")
-    for subscription in subscriptions:
-        table.add_row(subscription.subscription_id, subscription.name)
+    table = snap_cleanup.list_subscriptions()
     console.print(table)
 
 
@@ -46,13 +40,7 @@ def list_resource_groups(
     )
 ):
     """List all resource groups."""
-    resource_groups = snap_cleanup.list_resource_groups()
-    table = Table(title="Resource Group List")
-    headers = ["Name", "Location"]
-    for header in headers:
-        table.add_column(header, style="magenta")
-    for resource_group in resource_groups:
-        table.add_row(resource_group.name, resource_group.location)
+    table = snap_cleanup.list_resource_groups()
     console.print(table)
 
 
@@ -66,19 +54,7 @@ def list_snapshots(
     )
 ):
     """List all snapshots."""
-    snapshots = snap_cleanup.list_snapshots()
-    table = Table(title="Snapshot List")
-    headers = ["Resource Group", "Snapshot", "Location", "Created Date", f"{settings.TTL.TAG_NAME} Tag"]
-    for header in headers:
-        table.add_column(header, style="magenta")
-    for snapshot in snapshots:
-        table.add_row(
-            snapshot.resource_group,
-            snapshot.name,
-            snapshot.location,
-            snapshot.dt_created,
-            snapshot.ttl_tag_value
-        )
+    table = snap_cleanup.list_snapshots()
     console.print(table)
 
 
@@ -102,25 +78,12 @@ def update_snap_tag(
 ):
     """Add time-to-live tag on snapshots that do not already have."""
     snapshots = snap_cleanup.list_snapshots()
-    updated_snapshots = snap_cleanup.update_snapshot_tag(
+    table = snap_cleanup.update_snapshot_tag(
         list_snapshots=snapshots,
         ttl_tag_name=ttl_tag_name,
         ttl_days=ttl_days,
         dry_run=dry_run
     )
-    table = Table(title="Updated Snapshots")
-    headers = ["Resource Group", "Snapshot", "Location", "Created Date", f"{settings.TTL.TAG_NAME} Tag", "Action"]
-    for header in headers:
-        table.add_column(header, style="magenta")
-    for snapshot in updated_snapshots:
-        table.add_row(
-            snapshot.resource_group,
-            snapshot.name,
-            snapshot.location,
-            snapshot.dt_created,
-            snapshot.ttl_tag_value,
-            snapshot.action
-        )
     console.print(table)
 
 
@@ -138,21 +101,8 @@ def delete_snap_tag(
 ):
     """Delete all Add time-to-live tag on snapshots that do not already have."""
     snapshots = snap_cleanup.list_snapshots()
-    deleted_snapshots = snap_cleanup.delete_snapshots(
+    table = snap_cleanup.delete_snapshots(
         list_snapshots=snapshots,
         dry_run=dry_run
     )
-    table = Table(title="Deleted Snapshots")
-    headers = ["Resource Group", "Snapshot", "Location", "Created Date", f"{settings.TTL.TAG_NAME} Tag", "Action"]
-    for header in headers:
-        table.add_column(header, style="magenta")
-    for snapshot in deleted_snapshots:
-        table.add_row(
-            snapshot.resource_group,
-            snapshot.name,
-            snapshot.location,
-            snapshot.dt_created,
-            snapshot.ttl_tag_value,
-            snapshot.action
-        )
     console.print(table)
