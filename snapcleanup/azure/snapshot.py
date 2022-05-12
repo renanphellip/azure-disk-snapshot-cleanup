@@ -1,3 +1,4 @@
+from datetime import datetime
 from snapcleanup.azure.cli import AzureCli
 from snapcleanup.entities import SnapshotInfo
 
@@ -15,9 +16,10 @@ class SnapshotService:
                 list_snapshots.append(
                     SnapshotInfo (
                         resource_group=snapshot.get('resourceGroup'),
+                        snapshot_id=snapshot.get('id'),
                         name=snapshot.get('name'),
                         location=snapshot.get('location'),
-                        dt_created=snapshot.get('timeCreated'),
+                        created_date=snapshot.get('timeCreated'),
                         tags=snapshot.get('tags')
                     )
                 )
@@ -33,9 +35,10 @@ class SnapshotService:
         if snapshot:
             return SnapshotInfo (
                 resource_group=snapshot.get('resourceGroup'),
+                snapshot_id=snapshot.get('id'),
                 name=snapshot.get('name'),
                 location=snapshot.get('location'),
-                dt_created=snapshot.get('timeCreated'),
+                created_date=snapshot.get('timeCreated'),
                 tags=snapshot.get('tags')
             )
         

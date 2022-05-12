@@ -1,19 +1,16 @@
 import typer
-from typing import Optional, List
+from typing import Optional
 from snapcleanup.config import settings
 from snapcleanup.core import DiskSnapshotCleanup
-from rich.console import Console
-from rich.table import Table
 
 
 cli = typer.Typer(help="Azure Disk Snapshot Cleanup", no_args_is_help=True)
 snap_cleanup = DiskSnapshotCleanup(
-    client_id=settings.AZURE.AZURE_CLIENT_ID,
-    client_secret=settings.AZURE.AZURE_CLIENT_SECRET,
-    tenant_id=settings.AZURE.AZURE_TENANT_ID,
-    subscription_id=settings.AZURE.AZURE_SUBSCRIPTION_ID
+    client_id=settings.AZURE_CLIENT_ID,
+    client_secret=settings.AZURE_CLIENT_SECRET,
+    tenant_id=settings.AZURE_TENANT_ID,
+    subscription_id=settings.AZURE_SUBSCRIPTION_ID
 )
-console = Console()
 
 
 @cli.command("list-sub")
@@ -26,8 +23,12 @@ def list_subscriptions(
     )
 ):
     """List all subscriptions that user has access."""
-    table = snap_cleanup.list_subscriptions()
-    console.print(table)
+    subscriptions = snap_cleanup.list_subscriptions()
+    snap_cleanup.print_table(
+        table_title="Subscription List",
+        headers=["subscription_id", "name"],
+        object_list=subscriptions
+    )
 
 
 @cli.command("list-rg")
@@ -40,8 +41,12 @@ def list_resource_groups(
     )
 ):
     """List all resource groups."""
-    table = snap_cleanup.list_resource_groups()
-    console.print(table)
+    resource_groups = snap_cleanup.list_resource_groups()
+    snap_cleanup.print_table(
+        table_title="Resource Group List",
+        headers=["name", "location"],
+        object_list=resource_groups
+    )
 
 
 @cli.command("list-snap")
@@ -54,8 +59,12 @@ def list_snapshots(
     )
 ):
     """List all snapshots."""
-    table = snap_cleanup.list_snapshots()
-    console.print(table)
+    snapshots = snap_cleanup.list_snapshots()
+    snap_cleanup.print_table(
+        table_title="Snapshot List",
+        headers=["resource_group", "name", "location", "created_date", "ttl_tag_value"],
+        object_list=snapshots
+    )
 
 
 @cli.command("update-snap-tag")
@@ -78,13 +87,17 @@ def update_snap_tag(
 ):
     """Add time-to-live tag on snapshots that do not already have."""
     snapshots = snap_cleanup.list_snapshots()
-    table = snap_cleanup.update_snapshot_tag(
+    updated_snapshots = snap_cleanup.update_snapshot_tag(
         list_snapshots=snapshots,
         ttl_tag_name=ttl_tag_name,
         ttl_days=ttl_days,
         dry_run=dry_run
     )
-    console.print(table)
+    snap_cleanup.print_table(
+        table_title="Updated Snapshots",
+        headers=["resource_group", "name", "location", "created_date", "ttl_tag_value", "action"],
+        object_list=updated_snapshots
+    )
 
 
 @cli.command("delete-snap")
@@ -101,8 +114,12 @@ def delete_snap_tag(
 ):
     """Delete all Add time-to-live tag on snapshots that do not already have."""
     snapshots = snap_cleanup.list_snapshots()
-    table = snap_cleanup.delete_snapshots(
+    deleted_snapshots = snap_cleanup.delete_snapshots(
         list_snapshots=snapshots,
         dry_run=dry_run
     )
-    console.print(table)
+    snap_cleanup.print_table(
+        table_title="Deleted Snapshots",
+        headers=["resource_group", "name", "location", "created_date", "ttl_tag_value", "action"],
+        object_list=deleted_snapshots
+    )

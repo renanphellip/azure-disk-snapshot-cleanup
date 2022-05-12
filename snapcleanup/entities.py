@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from config import settings
+from typing import Any
+from snapcleanup.config import settings
 
 
 class ActionStates(Enum):
@@ -10,6 +11,9 @@ class ActionStates(Enum):
     UPDATED = 'Updated'
     PENDING_DELETE = 'Pending Delete'
     DELETED = 'Deleted'
+
+    def __str__(self):
+        return str(self.value)
 
 
 @dataclass(frozen=True)
@@ -27,9 +31,10 @@ class ResourceGroupInfo:
 @dataclass
 class SnapshotInfo:
     resource_group: str
+    snapshot_id: str
     name: str
     location: str
-    dt_created: datetime
+    created_date: Any
     tags: dict = field(default_factory=dict)
     action: ActionStates = field(init=False)
 
@@ -40,6 +45,7 @@ class SnapshotInfo:
     '''
     def __post_init__(self):
         self.action = ActionStates.NOT_DEFINED
+        self.created_date = datetime.strptime(self.created_date, "%Y-%m-%dT%H:%M:%S.%f%z").strftime("%Y-%m-%d %H:%M:%S")
 
 
     @property
@@ -49,8 +55,3 @@ class SnapshotInfo:
             if isinstance(self.tags.get(tag_name), str):
                 return self.tags.get(tag_name)
         return ''
-
-
-    @property
-    def dt_created(self):
-        return datetime.strptime(self.dt_created, "%Y-%m-%dT%H:%M:%S.%f%z")
