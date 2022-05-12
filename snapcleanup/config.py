@@ -5,7 +5,7 @@ from dynaconf import Dynaconf, Validator
 settings = Dynaconf(
     envvar_prefix="DYNACONF",
     root_path=os.path.dirname(__file__),
-    settings_files=['settings.toml', '.secrets.toml'],
+    settings_files=["settings.toml", ".secrets.toml"],
 )
 # `envvar_prefix` = export envvars with `export DYNACONF_FOO=bar`.
 # `settings_files` = Load these files in the order.

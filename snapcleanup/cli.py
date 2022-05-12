@@ -9,7 +9,7 @@ snap_cleanup = DiskSnapshotCleanup(
     client_id=settings.AZURE_CLIENT_ID,
     client_secret=settings.AZURE_CLIENT_SECRET,
     tenant_id=settings.AZURE_TENANT_ID,
-    subscription_id=settings.AZURE_SUBSCRIPTION_ID
+    subscription_id=settings.AZURE_SUBSCRIPTION_ID,
 )
 
 
@@ -20,14 +20,14 @@ def list_subscriptions(
     ),
     json: Optional[bool] = typer.Option(
         default=False, help="Export output to JSON file"
-    )
+    ),
 ):
     """List all subscriptions that user has access."""
     subscriptions = snap_cleanup.list_subscriptions()
     snap_cleanup.print_table(
         table_title="Subscription List",
         headers=["subscription_id", "name"],
-        object_list=subscriptions
+        object_list=subscriptions,
     )
 
 
@@ -38,14 +38,14 @@ def list_resource_groups(
     ),
     json: Optional[bool] = typer.Option(
         default=False, help="Export output to JSON file"
-    )
+    ),
 ):
     """List all resource groups."""
     resource_groups = snap_cleanup.list_resource_groups()
     snap_cleanup.print_table(
         table_title="Resource Group List",
         headers=["name", "location"],
-        object_list=resource_groups
+        object_list=resource_groups,
     )
 
 
@@ -56,14 +56,20 @@ def list_snapshots(
     ),
     json: Optional[bool] = typer.Option(
         default=False, help="Export output to JSON file"
-    )
+    ),
 ):
     """List all snapshots."""
     snapshots = snap_cleanup.list_snapshots()
     snap_cleanup.print_table(
         table_title="Snapshot List",
-        headers=["resource_group", "name", "location", "created_date", "ttl_tag_value"],
-        object_list=snapshots
+        headers=[
+            "resource_group",
+            "name",
+            "location",
+            "created_date",
+            "ttl_tag_value",
+        ],
+        object_list=snapshots,
     )
 
 
@@ -83,7 +89,7 @@ def update_snap_tag(
     ),
     dry_run: Optional[bool] = typer.Option(
         default=False, help="Command simulation"
-    )
+    ),
 ):
     """Add time-to-live tag on snapshots that do not already have."""
     snapshots = snap_cleanup.list_snapshots()
@@ -91,12 +97,19 @@ def update_snap_tag(
         list_snapshots=snapshots,
         ttl_tag_name=ttl_tag_name,
         ttl_days=ttl_days,
-        dry_run=dry_run
+        dry_run=dry_run,
     )
     snap_cleanup.print_table(
         table_title="Updated Snapshots",
-        headers=["resource_group", "name", "location", "created_date", "ttl_tag_value", "action"],
-        object_list=updated_snapshots
+        headers=[
+            "resource_group",
+            "name",
+            "location",
+            "created_date",
+            "ttl_tag_value",
+            "action",
+        ],
+        object_list=updated_snapshots,
     )
 
 
@@ -110,16 +123,22 @@ def delete_snap_tag(
     ),
     dry_run: Optional[bool] = typer.Option(
         default=False, help="Command simulation"
-    )
+    ),
 ):
     """Delete all Add time-to-live tag on snapshots that do not already have."""
     snapshots = snap_cleanup.list_snapshots()
     deleted_snapshots = snap_cleanup.delete_snapshots(
-        list_snapshots=snapshots,
-        dry_run=dry_run
+        list_snapshots=snapshots, dry_run=dry_run
     )
     snap_cleanup.print_table(
         table_title="Deleted Snapshots",
-        headers=["resource_group", "name", "location", "created_date", "ttl_tag_value", "action"],
-        object_list=deleted_snapshots
+        headers=[
+            "resource_group",
+            "name",
+            "location",
+            "created_date",
+            "ttl_tag_value",
+            "action",
+        ],
+        object_list=deleted_snapshots,
     )
