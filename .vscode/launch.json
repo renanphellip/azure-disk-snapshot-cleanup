@@ -11,7 +11,7 @@
             "program": "main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["list-sub"]
+            "args": ["list-sub", "--json", "teste.json"]
         }
     ]
 }

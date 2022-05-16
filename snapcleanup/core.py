@@ -1,4 +1,5 @@
 import re
+import os
 from datetime import datetime, timedelta
 from snapcleanup.config import settings
 from snapcleanup.azure.resource_group import ResourceGroupService
@@ -13,6 +14,7 @@ from snapcleanup.azure.snapshot import SnapshotService
 from snapcleanup.entities import SnapshotInfo
 from rich.table import Table
 from rich.console import Console
+from prettytable import PrettyTable
 
 
 class DiskSnapshotCleanup:
@@ -35,6 +37,29 @@ class DiskSnapshotCleanup:
             return True
         return False
 
+    def __create_pretty_table(
+        self, headers: list[str], object_list: list[object]
+    ):
+        """
+        This private method its used only to create a PrettyTable to
+        facilitate exporting data to JSON files
+        """
+        try:
+            table = PrettyTable(headers)
+            for item in object_list:
+                values = [str(getattr(item, header)) for header in headers]
+                table.add_row(values)
+            return table
+        except AttributeError:
+            self.console.print(
+                f"The table headers must be equivalent object attributes name.",
+                style="red",
+            )
+            exit(1)
+        except Exception as error:
+            self.console.print(error, style="red")
+            exit(1)
+
     def print_table(
         self, table_title: str, headers: list[str], object_list: list[object]
     ) -> Table:
@@ -48,9 +73,60 @@ class DiskSnapshotCleanup:
             self.console.print("\n", table, "\n")
             return table
         except AttributeError:
-            raise AttributeError(
-                f"The table headers must be equivalent object attributes name."
+            self.console.print(
+                f"The table headers must be equivalent object attributes name.",
+                style="red",
             )
+            exit(1)
+        except Exception as error:
+            self.console.print(error, style="red")
+            exit(1)
+
+    def create_csv_file(
+        self,
+        file_path: str,
+        headers: list[str],
+        object_list: list[object],
+        delimiter: str,
+        verbose: bool,
+    ) -> bool:
+        try:
+
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            with open(file=file_path, mode="w", encoding="utf-8") as csv_file:
+                fields = delimiter.join(headers) + "\n"
+                csv_file.write(fields)
+                for item in object_list:
+                    values = [str(getattr(item, header)) for header in headers]
+                    row_values = delimiter.join(values) + "\n"
+                    csv_file.write(row_values)
+            self.console.print(f"{file_path} has been created.", style="green")
+        except Exception as error:
+            self.console.print(f"Failed to create: {file_path}", style="red")
+            if verbose:
+                self.console.print(f"Exception: {error}", style="red")
+            exit(1)
+
+    def create_json_file(
+        self,
+        file_path: str,
+        headers: list[str],
+        object_list: list[object],
+        indent_spaces: int,
+        verbose: bool,
+    ) -> bool:
+        table = self.__create_pretty_table(headers, object_list)
+        json_string = table.get_json_string(header=False, indent=indent_spaces)
+        try:
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            with open(file=file_path, mode="w", encoding="utf-8") as json_file:
+                json_file.write(json_string)
+            self.console.print(f"{file_path} has been created.", style="green")
+        except Exception as error:
+            self.console.print(f"Failed to create: {file_path}", style="red")
+            if verbose:
+                self.console.print(f"Exception: {error}", style="red")
+            exit(1)
 
     def list_subscriptions(self) -> list[SubscriptionInfo]:
         return SubscriptionService.list_subscriptions()
