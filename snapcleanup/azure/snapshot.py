@@ -25,6 +25,7 @@ class SnapshotService:
 
         return list_snapshots
 
+
     @staticmethod
     def get_snapshot(
         snapshot_name: str, resource_group_name: str
@@ -51,28 +52,32 @@ class SnapshotService:
 
         return None
 
+
     @staticmethod
     def update_snapshot_tags(list_snapshot_id: list[str], tags: dict) -> bool:
-        cmd = ["snapshot", "update", "--ids"]
-        for snapshot_id in list_snapshot_id:
-            cmd.append(snapshot_id)
+        if len(list_snapshot_id) > 0:        
+            cmd = ["snapshot", "update", "--ids"]
+            for snapshot_id in list_snapshot_id:
+                cmd.append(snapshot_id)
 
-        cmd.append("--set")
-        for key, value in tags.items():
-            cmd.append(f"tags.{key}={value}")
+            cmd.append("--set")
+            for key, value in tags.items():
+                cmd.append(f"tags.{key}={value}")
 
-        result = AzureCli.run_cmd(cmd)
-        if result:
-            return True
+            result = AzureCli.run_cmd(cmd)
+            if result:
+                return True
         return False
+
 
     @staticmethod
     def delete_snapshot(list_snapshot_id: list[str]) -> bool:
-        cmd = ["snapshot", "delete", "--ids"]
-        for snapshot_id in list_snapshot_id:
-            cmd.append(snapshot_id)
+        if len(list_snapshot_id) > 0:
+            cmd = ["snapshot", "delete", "--ids"]
+            for snapshot_id in list_snapshot_id:
+                cmd.append(snapshot_id)
 
-        result = AzureCli.run_cmd(cmd)
-        if result:
-            return True
+            result = AzureCli.run_cmd(cmd)
+            if result:
+                return True
         return False

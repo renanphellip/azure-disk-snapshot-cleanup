@@ -20,12 +20,14 @@ class SubscriptionService:
 
         return list_subscriptions
 
+
     @staticmethod
     def get_subscription(subscription_id: str) -> SubscriptionInfo | None:
         cmd = [
             "account",
             "subscription",
-            "show" "--subscription-id",
+            "show",
+            "--subscription-id",
             subscription_id,
         ]
         subscription = AzureCli.run_cmd(cmd)
@@ -37,6 +39,7 @@ class SubscriptionService:
             )
 
         return None
+
 
     @staticmethod
     def set_subscription(subscription_id: str) -> bool:

@@ -20,6 +20,7 @@ class ResourceGroupService:
 
         return list_resource_groups
 
+
     @staticmethod
     def get_resource_group_by_name(rg_name: str) -> ResourceGroupInfo | None:
         cmd = ["group", "show", "--name", rg_name]
