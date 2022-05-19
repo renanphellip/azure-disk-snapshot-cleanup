@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Azure Disk Snapshot Cleanup"
 authors = ["Renan Morais <renan.ps.morais@gmail.com>"]
 license = "MIT"
+include = ["snapcleanup"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -24,7 +25,7 @@ pytest-cov = "^3.0.0"
 pytest-mock = "^3.7.0"
 
 [tool.poetry.scripts]
-snapcleanup = "main:cli"
+snapcleanup = "snapcleanup.__main__:app"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
