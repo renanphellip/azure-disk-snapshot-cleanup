@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any
+import re
 from snapcleanup.config import settings
 
 
@@ -30,11 +30,15 @@ class ResourceGroupInfo:
 
 @dataclass
 class SnapshotInfo:
+    """
+    :param: created_date = "2022-12-30T12:30:50.123456-0300"
+    """
+
     resource_group: str
     snapshot_id: str
     name: str
     location: str
-    created_date: Any
+    created_date: str
     tags: dict = field(default_factory=dict)
     action: ActionStates = field(init=False)
 
@@ -45,9 +49,10 @@ class SnapshotInfo:
 
     def __post_init__(self):
         self.action = ActionStates.NOT_DEFINED
-        self.created_date = datetime.strptime(
-            self.created_date, "%Y-%m-%dT%H:%M:%S.%f%z"
-        ).strftime("%Y-%m-%d %H:%M:%S")
+        input_format = "%Y-%m-%dT%H:%M:%S.%f%z"
+        output_format = "%Y-%m-%d %H:%M:%S"
+        created_datetime = datetime.strptime(self.created_date, input_format)
+        self.created_date = created_datetime.strftime(output_format)
 
     @property
     def ttl_tag_value(self):
@@ -56,3 +61,10 @@ class SnapshotInfo:
             if isinstance(self.tags.get(tag_name), str):
                 return self.tags.get(tag_name)
         return ""
+
+    @property
+    def ttl_tag_exists(self):
+        ttl_pattern = "^[0-9]{4}(-[0-9]{2}){2}$"
+        if re.search(ttl_pattern, self.ttl_tag_value):
+            return True
+        return False

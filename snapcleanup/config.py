@@ -3,7 +3,7 @@ from dynaconf import Dynaconf, Validator
 
 
 settings = Dynaconf(
-    envvar_prefix="DYNACONF",
+    envvar_prefix="SNAPCLEANUP",
     root_path=os.path.dirname(__file__),
     settings_files=["settings.toml", ".secrets.toml"],
 )
@@ -11,10 +11,13 @@ settings = Dynaconf(
 # `settings_files` = Load these files in the order.
 
 settings.validators.register(
-    Validator("AZURE_CLIENT_ID", must_exist=True),
-    Validator("AZURE_CLIENT_SECRET", must_exist=True),
-    Validator("AZURE_TENANT_ID", must_exist=True),
-    Validator("AZURE_SUBSCRIPTION_ID", must_exist=True),
+    Validator(
+        "AZURE_CLIENT_ID",
+        "AZURE_CLIENT_SECRET",
+        "AZURE_TENANT_ID",
+        "AZURE_SUBSCRIPTION_IDS",
+        must_exist=True,
+    ),
 )
 
 settings.validators.validate()

@@ -10,7 +10,6 @@ class AzureService:
             return True
         return False
 
-
     @staticmethod
     def login(client_id: str, client_secret: str, tenant_id: str) -> bool:
         cmd = [

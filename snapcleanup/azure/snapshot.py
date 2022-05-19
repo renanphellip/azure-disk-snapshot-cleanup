@@ -1,4 +1,3 @@
-from datetime import datetime
 from snapcleanup.azure.cli import AzureCli
 from snapcleanup.entities import SnapshotInfo
 
@@ -25,11 +24,8 @@ class SnapshotService:
 
         return list_snapshots
 
-
     @staticmethod
-    def get_snapshot(
-        snapshot_name: str, resource_group_name: str
-    ) -> SnapshotInfo | None:
+    def get_snapshot(snapshot_name: str, resource_group_name: str) -> SnapshotInfo | None:
         cmd = [
             "snapshot",
             "show",
@@ -52,10 +48,9 @@ class SnapshotService:
 
         return None
 
-
     @staticmethod
     def update_snapshot_tags(list_snapshot_id: list[str], tags: dict) -> bool:
-        if len(list_snapshot_id) > 0:        
+        if len(list_snapshot_id) > 0:
             cmd = ["snapshot", "update", "--ids"]
             for snapshot_id in list_snapshot_id:
                 cmd.append(snapshot_id)
@@ -68,7 +63,6 @@ class SnapshotService:
             if result:
                 return True
         return False
-
 
     @staticmethod
     def delete_snapshot(list_snapshot_id: list[str]) -> bool:
