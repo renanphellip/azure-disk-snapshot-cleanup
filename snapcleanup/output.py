@@ -9,6 +9,7 @@ class Output:
     def __init__(self):
         self.__console = Console()
 
+
     def __create_pretty_table(self, headers: list[str], object_list: list[object]):
         """
         This private method its used only to create a PrettyTable to
@@ -26,9 +27,7 @@ class Output:
                 style="red",
             )
             exit(1)
-        except Exception as error:
-            self.__console.print(error, style="red")
-            exit(1)
+
 
     def print_table(self, table_title: str, headers: list[str], object_list: list[object]) -> Table:
         try:
@@ -47,9 +46,7 @@ class Output:
                 style="red",
             )
             exit(1)
-        except Exception as error:
-            self.__console.print(error, style="red")
-            exit(1)
+
 
     def create_csv_file(
         self,
@@ -69,12 +66,14 @@ class Output:
                         values = [str(getattr(item, header)) for header in headers]
                         row_values = delimiter.join(values) + "\n"
                         csv_file.write(row_values)
-                self.__console.print(f"{file_path} has been created.", style="green")
+                if verbose:
+                    self.__console.print(f"{file_path} has been created.", style="green")
         except Exception as error:
             self.__console.print(f"Failed to create: {file_path}", style="red")
             if verbose:
                 self.__console.print(f"Exception: {error}", style="red")
             exit(1)
+
 
     def create_json_file(
         self,
@@ -91,7 +90,8 @@ class Output:
                 os.makedirs(os.path.dirname(file_path), exist_ok=True)
                 with open(file=file_path, mode="w", encoding="utf-8") as json_file:
                     json_file.write(json_string)
-                self.__console.print(f"{file_path} has been created.", style="green")
+                if verbose:
+                    self.__console.print(f"{file_path} has been created.", style="green")
         except Exception as error:
             self.__console.print(f"Failed to create: {file_path}", style="red")
             if verbose:
