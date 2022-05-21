@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Azure Disk Snapshot Cleanup"
 authors = ["Renan Morais <renan.ps.morais@gmail.com>"]
 license = "MIT"
-include = ["snapcleanup"]
+packages = [
+    { include = "snapcleanup" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"

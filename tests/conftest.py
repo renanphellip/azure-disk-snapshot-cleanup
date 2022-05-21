@@ -44,7 +44,7 @@ def mock_list_snapshots() -> list[SnapshotInfo]:
     list_snapshots: list[SnapshotInfo] = []
     list_snapshots.append(SnapshotInfo(
         resource_group="mock-rg-0",
-        snapshot_id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-rg-0/providers/Microsoft.Compute/snapshots/mock-snap-0",
+        snapshot_id="/resourceGroups/mock-rg-0/mock-snap-0",
         name="mock-snap-0",
         location="westus",
         created_date=creation_date,
@@ -52,7 +52,7 @@ def mock_list_snapshots() -> list[SnapshotInfo]:
     ))
     list_snapshots.append(SnapshotInfo(
         resource_group="mock-rg-0",
-        snapshot_id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-rg-0/providers/Microsoft.Compute/snapshots/mock-snap-1",
+        snapshot_id="/resourceGroups/mock-rg-0/mock-snap-1",
         name="mock-snap-1",
         location="westus",
         created_date=creation_date,
@@ -60,7 +60,7 @@ def mock_list_snapshots() -> list[SnapshotInfo]:
     ))
     list_snapshots.append(SnapshotInfo(
         resource_group="mock-rg-1",
-        snapshot_id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/mock-rg-1/providers/Microsoft.Compute/snapshots/mock-snap-2",
+        snapshot_id="/resourceGroups/mock-rg-1/mock-snap-2",
         name="mock-snap-2",
         location="eastus",
         created_date=creation_date,
@@ -68,7 +68,7 @@ def mock_list_snapshots() -> list[SnapshotInfo]:
     ))
     list_snapshots.append(SnapshotInfo(
         resource_group="mock-rg-1",
-        snapshot_id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/mock-rg-1/providers/Microsoft.Compute/snapshots/mock-snap-3",
+        snapshot_id="/resourceGroups/mock-rg-1/mock-snap-3",
         name="mock-snap-3",
         location="eastus",
         created_date=creation_date,

@@ -1,2 +1,4 @@
 [run]
-omit = snapcleanup/azure/*
+omit =
+    *__main__*
+    snapcleanup/azure/*
