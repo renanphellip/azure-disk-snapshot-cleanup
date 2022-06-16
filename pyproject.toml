@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "azure-disk-snapshot-cleanup"
-version = "0.1.0"
+version = "1.0.0"
 description = "Azure Disk Snapshot Cleanup"
 authors = ["Renan Morais <renan.ps.morais@gmail.com>"]
 license = "MIT"
@@ -8,14 +8,18 @@ packages = [
     { include = "snapcleanup" }
 ]
 
+[[tool.poetry.source]]
+name = "pull-artifacts"
+url = "https://pkgs.dev.azure.com/VALE-Automation/Cloud-Automation/_packaging/Python-Artifacts/pypi/simple/"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 dynaconf = "^3.1.8"
-azure-cli-core = "^2.36.0"
 rich = "^12.4.0"
 typer = {extras = ["all"], version = "^0.4.1"}
-azure-cli = "^2.36.0"
 prettytable = "^3.3.0"
+azure-identity = "^1.10.0"
+python-library-azure = {path = "../Python-Library-Azure"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"

@@ -8,10 +8,10 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "main.py",
+            "program": "snapcleanup/__main__.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["list-rg"]
+            "args": ["update-snap-tag", "--dry-run"]
         }
     ]
 }
